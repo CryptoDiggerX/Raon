@@ -131,20 +131,49 @@ a{color:var(--accent)}
     btn.disabled=false;
   }
 
-  async function countTx(a){
-    var nonce=parseInt(await eth().request({method:"eth_getTransactionCount",params:[a,"latest"]}),16)||0;
-    var total=0, api=false;
+  function timed(url,opts){
+    var ac=new AbortController(), t=setTimeout(function(){ac.abort();},7000);
+    opts=opts||{};opts.signal=ac.signal;
+    return fetch(url,opts).then(function(r){clearTimeout(t);return r;},function(e){clearTimeout(t);throw e;});
+  }
+
+  async function rpcNonce(a){
+    var urls=["https://mainnet.base.org","https://base-rpc.publicnode.com","https://base.llamarpc.com"];
+    for(var i=0;i<urls.length;i++){
+      try{
+        var r=await timed(urls[i],{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_getTransactionCount",params:[a,"latest"]})});
+        var j=await r.json();
+        if(j&&j.result!==undefined)return {ok:true,v:parseInt(j.result,16)||0};
+      }catch(e){}
+    }
+    return {ok:false,v:0};
+  }
+
+  async function explorerCount(a){
+    var out={ok:false,v:0};
     try{
-      var ac=new AbortController(), t=setTimeout(function(){ac.abort();},8000);
-      var r=await fetch("https://base.blockscout.com/api/v2/addresses/"+a+"/counters",{signal:ac.signal});
-      clearTimeout(t);
-      if(r.ok){var j=await r.json();total=parseInt(j.transactions_count,10)||0;api=true;}
+      var r=await timed("https://base.blockscout.com/api/v2/addresses/"+a+"/counters");
+      if(r.ok){var j=await r.json();out.v=Math.max(out.v,parseInt(j.transactions_count,10)||0);out.ok=true;}
     }catch(e){}
-    return {nonce:nonce,total:total,api:api};
+    try{
+      var r2=await timed("https://base.blockscout.com/api?module=account&action=txlist&address="+a+"&page=1&offset="+MIN_TX+"&sort=asc");
+      var j2=await r2.json();
+      if(j2&&Array.isArray(j2.result)){out.v=Math.max(out.v,j2.result.length);out.ok=true;}
+    }catch(e){}
+    return out;
+  }
+
+  async function countTx(a){
+    var wallet=0;
+    try{wallet=parseInt(await eth().request({method:"eth_getTransactionCount",params:[a,"latest"]}),16)||0;}catch(e){}
+    var res=await Promise.all([rpcNonce(a),explorerCount(a)]);
+    var rpc=res[0], exp=res[1];
+    return {wallet:wallet,rpc:rpc.v,exp:exp.v,api:(rpc.ok||exp.ok),n:Math.max(wallet,rpc.v,exp.v)};
   }
 
   async function connect(){
     if(!eth()){say('<b class="bad">No wallet detected.</b> Open this page in a wallet browser (MetaMask, Coinbase Wallet, Rabby) or install a wallet extension.',"bad");return;}
+    if(btn.dataset.sw){try{await eth().request({method:"wallet_requestPermissions",params:[{eth_accounts:{}}]});}catch(e){}}
     var a=await eth().request({method:"eth_requestAccounts"});
     acct=a[0];
     await toBase();
@@ -153,16 +182,16 @@ a{color:var(--accent)}
     var prev=load(acct);
     if(prev){btn.textContent="Checking…";await watch(prev);return;}
     say("Checking eligibility for "+short(acct)+"…");
-    var c=await countTx(acct);var n=Math.max(c.nonce,c.total);
+    var c=await countTx(acct);var n=c.n;
     if(n>=MIN_TX){
       say('<b class="ok">Eligible.</b> '+short(acct)+" has "+n+" transactions on Base.<br>Join/claim fee: <b>0.000333 ETH</b> plus network gas. Your wallet shows the exact amount and receiving address before you sign.","ok");
-      btn.textContent="Join & claim · 0.000333 ETH";btn.dataset.mode="join";
+      btn.textContent="Join & claim · 0.000333 ETH";btn.dataset.mode="join";btn.dataset.sw="";
     } else if(!c.api){
-      say('<b class="bad">Could not verify.</b> The Base explorer lookup was unavailable (sent transactions found: '+c.nonce+"). Open this page from your own HTTPS site, not a sandboxed preview, then try again.","bad");
+      say('<b class="bad">Could not verify.</b> The Base lookups were unavailable (wallet reported '+c.wallet+"). Check your connection and try again.","bad");
       btn.textContent="Retry check";btn.dataset.mode="connect";
     } else {
-      say('<b class="bad">Not eligible.</b> '+short(acct)+" has "+n+" of the "+MIN_TX+" transactions required on Base.<br><span style=\"color:var(--muted)\">Sent: "+c.nonce+" · Sent + received: "+c.total+". Make sure you connected the wallet that holds your Base history.</span>","bad");
-      btn.textContent="Switch wallet";btn.dataset.mode="connect";
+      say('<b class="bad">Not eligible.</b> '+short(acct)+" has "+n+" of the "+MIN_TX+" transactions required on Base.<br><span style=\"color:var(--muted)\">Wallet: "+c.wallet+" · Base RPC: "+c.rpc+" · Explorer: "+c.exp+".<br>Connected: "+acct+"<br>If this is not your main wallet, tap the button to pick another account.</span>","bad");
+      btn.textContent="Switch account";btn.dataset.mode="connect";btn.dataset.sw="1";
     }
   }
 
