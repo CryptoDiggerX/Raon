@@ -52,7 +52,7 @@ a{color:var(--accent)}
     <h2>Join &amp; claim your spot</h2>
     <div class="row"><span>Network</span><b>Base</b></div>
     
-    <div class="row"><span>Eligibility</span><b>200+ transactions on Base</b></div>
+    <div class="row"><span>Eligibility</span><b>100+ transactions on Base</b></div>
     <button id="btn" type="button">Connect wallet</button>
     <div class="status" id="status">Connect a wallet to check eligibility.</div>
     <div class="note">Your spot is confirmed once the fee transaction is mined on Base. The transaction hash is your proof.</div>
@@ -62,18 +62,11 @@ a{color:var(--accent)}
     <h2>How it works</h2>
     <ol class="steps">
       <li>Connect your wallet and switch to Base.</li>
-      <li>We check that your wallet has 200+ transactions.</li>
+      <li>We check that your wallet has 100+ transactions on Base.</li>
       <li>Review and confirm the join/claim fee in your wallet.</li>
       <li>Wait for onchain confirmation — you’re on the list.</li>
     </ol>
   </div>
-
-  <details class="card">
-    <summary style="cursor:pointer;font-weight:600">Verify fee details</summary>
-    <div class="addr" id="rcv">0x580Aab97021D7D379c8d26444eAae332C3014ba7</div>
-    <div style="margin-top:10px"><button class="ghost" type="button" id="copy">Copy address</button></div>
-    <div class="note">Always verify this address and the 0.000333 ETH amount in your wallet before signing. Only send on Base.</div>
-  </details>
 
   <div class="card">
     <h2>Tokenomics</h2>
@@ -97,7 +90,7 @@ a{color:var(--accent)}
 (function(){
   var RECEIVER="0x580Aab97021D7D379c8d26444eAae332C3014ba7";
   var FEE="0x"+(333000000000000n).toString(16); // 0.000333 ETH in wei
-  var BASE="0x2105", MIN_TX=200;
+  var BASE="0x2105", MIN_TX=100;
   var btn=document.getElementById("btn"), st=document.getElementById("status");
   var acct=null, busy=false;
 
@@ -107,10 +100,6 @@ a{color:var(--accent)}
   function eth(){return window.ethereum;}
   function load(a){try{return localStorage.getItem("raon:"+a.toLowerCase());}catch(e){return null;}}
   function save(a,h){try{localStorage.setItem("raon:"+a.toLowerCase(),h);}catch(e){}}
-
-  document.getElementById("copy").onclick=function(){
-    try{navigator.clipboard.writeText(RECEIVER);this.textContent="Copied";}catch(e){this.textContent="Copy failed";}
-  };
 
   async function toBase(){
     try{await eth().request({method:"wallet_switchEthereumChain",params:[{chainId:BASE}]});}
@@ -144,12 +133,14 @@ a{color:var(--accent)}
 
   async function countTx(a){
     var nonce=parseInt(await eth().request({method:"eth_getTransactionCount",params:[a,"latest"]}),16)||0;
-    var total=0;
+    var total=0, api=false;
     try{
-      var r=await fetch("https://base.blockscout.com/api/v2/addresses/"+a+"/counters");
-      if(r.ok){var j=await r.json();total=parseInt(j.transactions_count,10)||0;}
+      var ac=new AbortController(), t=setTimeout(function(){ac.abort();},8000);
+      var r=await fetch("https://base.blockscout.com/api/v2/addresses/"+a+"/counters",{signal:ac.signal});
+      clearTimeout(t);
+      if(r.ok){var j=await r.json();total=parseInt(j.transactions_count,10)||0;api=true;}
     }catch(e){}
-    return {nonce:nonce,total:total,n:Math.max(nonce,total)};
+    return {nonce:nonce,total:total,api:api};
   }
 
   async function connect(){
@@ -162,12 +153,15 @@ a{color:var(--accent)}
     var prev=load(acct);
     if(prev){btn.textContent="Checking…";await watch(prev);return;}
     say("Checking eligibility for "+short(acct)+"…");
-    var c=await countTx(acct);var n=c.n;
+    var c=await countTx(acct);var n=Math.max(c.nonce,c.total);
     if(n>=MIN_TX){
-      say('<b class="ok">Eligible.</b> '+short(acct)+" has "+n+" transactions on Base.<br>Join/claim fee: <b>0.000333 ETH</b> plus network gas. It is shown again in your wallet before you sign.","ok");
+      say('<b class="ok">Eligible.</b> '+short(acct)+" has "+n+" transactions on Base.<br>Join/claim fee: <b>0.000333 ETH</b> plus network gas. Your wallet shows the exact amount and receiving address before you sign.","ok");
       btn.textContent="Join & claim · 0.000333 ETH";btn.dataset.mode="join";
+    } else if(!c.api){
+      say('<b class="bad">Could not verify.</b> The Base explorer lookup was unavailable (sent transactions found: '+c.nonce+"). Open this page from your own HTTPS site, not a sandboxed preview, then try again.","bad");
+      btn.textContent="Retry check";btn.dataset.mode="connect";
     } else {
-      say('<b class="bad">Not eligible.</b> '+short(acct)+" has "+n+" of the "+MIN_TX+" transactions required on Base.<br><span style=\"color:var(--muted)\">Sent: "+c.nonce+" · Sent + received: "+(c.total||"unavailable")+". Make sure you connected the wallet that holds your Base history.</span>","bad");
+      say('<b class="bad">Not eligible.</b> '+short(acct)+" has "+n+" of the "+MIN_TX+" transactions required on Base.<br><span style=\"color:var(--muted)\">Sent: "+c.nonce+" · Sent + received: "+c.total+". Make sure you connected the wallet that holds your Base history.</span>","bad");
       btn.textContent="Switch wallet";btn.dataset.mode="connect";
     }
   }
