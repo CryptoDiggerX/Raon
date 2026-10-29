@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>$RAON · Raon (라온) – Confirmed Rewards Waitlist</title>
+<style>
+:root{--bg:#fbf8f3;--fg:#1d1a24;--muted:#6b6676;--card:#fff;--line:#e8e2d8;--accent:#6d4aff;--accent2:#ff7a59;--ok:#12805c;--bad:#c2410c;--btnfg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f0d16;--fg:#f1eefa;--muted:#a29cb4;--card:#191625;--line:#2b2640;--accent:#9b82ff;--accent2:#ff8f70;--ok:#4cd6a1;--bad:#ff9a6b;--btnfg:#0f0d16}}
+:root[data-theme="dark"]{--bg:#0f0d16;--fg:#f1eefa;--muted:#a29cb4;--card:#191625;--line:#2b2640;--accent:#9b82ff;--accent2:#ff8f70;--ok:#4cd6a1;--bad:#ff9a6b;--btnfg:#0f0d16}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:28px 18px 56px}
+.badge{display:inline-block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid var(--line);border-radius:99px;padding:4px 12px;background:var(--card)}
+h1{font-size:clamp(34px,9vw,52px);line-height:1.05;margin:14px 0 6px;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--muted);margin:0 0 22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin:16px 0}
+h2{font-size:18px;margin:0 0 12px}
+.row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.row:last-child{border:0}
+.row b{font-weight:600}.row span{color:var(--muted)}
+.addr{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;margin-top:8px}
+button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:14px 18px;width:100%;cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--btnfg)}
+button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line);padding:8px 12px;width:auto;font-size:13px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.status{margin-top:14px;padding:12px 14px;border-radius:12px;font-size:14.5px;background:var(--bg);border:1px solid var(--line)}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;padding:6px 0 6px 34px;position:relative;font-size:15px}
+.steps li:before{content:counter(s);position:absolute;left:0;top:6px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--btnfg);font-size:13px;font-weight:700;text-align:center;line-height:24px}
+.tok{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.donut{width:150px;height:150px;border-radius:50%;flex:none;background:conic-gradient(#6d4aff 0 35%,#ff7a59 35% 55%,#12b5a5 55% 70%,#f5b83d 70% 82%,#4c8dff 82% 92%,#e84a8a 92% 97%,#8a8497 97% 100%);position:relative}
+.donut:after{content:"1B";position:absolute;inset:32px;background:var(--card);border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:22px}
+.leg{flex:1;min-width:200px;font-size:14px}
+.leg div{display:flex;align-items:center;gap:8px;padding:3px 0}
+.leg i{width:10px;height:10px;border-radius:3px;flex:none}
+.leg em{margin-left:auto;font-style:normal;font-weight:600}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <span class="badge">Base · Onchain Waitlist</span>
+  <h1><span>Raon</span> 라온</h1>
+  <p class="sub"><b>$RAON</b> confirmed rewards waitlist. Join onchain, get confirmed on Base, and secure your spot for the $RAON airdrop.</p>
+
+  <div class="card">
+    <h2>Join &amp; claim your spot</h2>
+    <div class="row"><span>Network</span><b>Base</b></div>
+    
+    <div class="row"><span>Eligibility</span><b>200+ transactions on Base</b></div>
+    <button id="btn" type="button">Connect wallet</button>
+    <div class="status" id="status">Connect a wallet to check eligibility.</div>
+    <div class="note">Your spot is confirmed once the fee transaction is mined on Base. The transaction hash is your proof.</div>
+  </div>
+
+  <div class="card">
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li>Connect your wallet and switch to Base.</li>
+      <li>We check that your wallet has 200+ transactions.</li>
+      <li>Review and confirm the join/claim fee in your wallet.</li>
+      <li>Wait for onchain confirmation — you’re on the list.</li>
+    </ol>
+  </div>
+
+  <details class="card">
+    <summary style="cursor:pointer;font-weight:600">Verify fee details</summary>
+    <div class="addr" id="rcv">0x580Aab97021D7D379c8d26444eAae332C3014ba7</div>
+    <div style="margin-top:10px"><button class="ghost" type="button" id="copy">Copy address</button></div>
+    <div class="note">Always verify this address and the 0.000333 ETH amount in your wallet before signing. Only send on Base.</div>
+  </details>
+
+  <div class="card">
+    <h2>Tokenomics</h2>
+    <div class="tok">
+      <div class="donut" role="img" aria-label="Tokenomics donut chart"></div>
+      <div class="leg">
+        <div><i style="background:#6d4aff"></i>Airdrop<em>35%</em></div>
+        <div><i style="background:#ff7a59"></i>Ecosystem &amp; rewards<em>20%</em></div>
+        <div><i style="background:#12b5a5"></i>Liquidity<em>15%</em></div>
+        <div><i style="background:#f5b83d"></i>Team (vested)<em>12%</em></div>
+        <div><i style="background:#4c8dff"></i>Treasury<em>10%</em></div>
+        <div><i style="background:#e84a8a"></i>Community grants<em>5%</em></div>
+        <div><i style="background:#8a8497"></i>Partners &amp; advisors<em>3%</em></div>
+      </div>
+    </div>
+    <div class="note">Proposed allocation of a 1,000,000,000 $RAON supply. Team and advisor tokens vest over time. Details may change before launch.</div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var RECEIVER="0x580Aab97021D7D379c8d26444eAae332C3014ba7";
+  var FEE="0x"+(333000000000000n).toString(16); // 0.000333 ETH in wei
+  var BASE="0x2105", MIN_TX=200;
+  var btn=document.getElementById("btn"), st=document.getElementById("status");
+  var acct=null, busy=false;
+
+  function say(msg,cls){st.className="status "+(cls||"");st.innerHTML=msg;}
+  function short(a){return a.slice(0,6)+"…"+a.slice(-4);}
+  function link(h){return '<a target="_blank" rel="noopener" href="https://basescan.org/tx/'+h+'">'+h.slice(0,10)+"…"+h.slice(-6)+"</a>";}
+  function eth(){return window.ethereum;}
+  function load(a){try{return localStorage.getItem("raon:"+a.toLowerCase());}catch(e){return null;}}
+  function save(a,h){try{localStorage.setItem("raon:"+a.toLowerCase(),h);}catch(e){}}
+
+  document.getElementById("copy").onclick=function(){
+    try{navigator.clipboard.writeText(RECEIVER);this.textContent="Copied";}catch(e){this.textContent="Copy failed";}
+  };
+
+  async function toBase(){
+    try{await eth().request({method:"wallet_switchEthereumChain",params:[{chainId:BASE}]});}
+    catch(e){
+      if(e&&e.code===4902){
+        await eth().request({method:"wallet_addEthereumChain",params:[{chainId:BASE,chainName:"Base",nativeCurrency:{name:"Ether",symbol:"ETH",decimals:18},rpcUrls:["https://mainnet.base.org"],blockExplorerUrls:["https://basescan.org"]}]});
+      } else throw e;
+    }
+  }
+
+  async function watch(hash){
+    say("Transaction sent: "+link(hash)+"<br>Waiting for confirmation on Base…");
+    btn.disabled=true;
+    for(var i=0;i<120;i++){
+      try{
+        var r=await eth().request({method:"eth_getTransactionReceipt",params:[hash]});
+        if(r){
+          if(r.status==="0x1"){
+            say('<b class="ok">✓ Confirmed.</b> '+short(acct)+" is on the Raon rewards waitlist.<br>Proof: "+link(hash),"ok");
+            btn.textContent="Confirmed ✓";return;
+          }
+          say('<b class="bad">Transaction failed.</b> '+link(hash)+"<br>You can try again.","bad");
+          btn.disabled=false;btn.textContent="Retry join & claim";return;
+        }
+      }catch(e){}
+      await new Promise(function(r){setTimeout(r,3000);});
+    }
+    say("Still pending. Check "+link(hash)+" on BaseScan.");
+    btn.disabled=false;
+  }
+
+  async function countTx(a){
+    var nonce=parseInt(await eth().request({method:"eth_getTransactionCount",params:[a,"latest"]}),16)||0;
+    var total=0;
+    try{
+      var r=await fetch("https://base.blockscout.com/api/v2/addresses/"+a+"/counters");
+      if(r.ok){var j=await r.json();total=parseInt(j.transactions_count,10)||0;}
+    }catch(e){}
+    return {nonce:nonce,total:total,n:Math.max(nonce,total)};
+  }
+
+  async function connect(){
+    if(!eth()){say('<b class="bad">No wallet detected.</b> Open this page in a wallet browser (MetaMask, Coinbase Wallet, Rabby) or install a wallet extension.',"bad");return;}
+    var a=await eth().request({method:"eth_requestAccounts"});
+    acct=a[0];
+    await toBase();
+    var cid=await eth().request({method:"eth_chainId"});
+    if(String(cid).toLowerCase()!==BASE){say('<b class="bad">Wrong network.</b> Please switch your wallet to Base and try again.',"bad");btn.textContent="Connect wallet";return;}
+    var prev=load(acct);
+    if(prev){btn.textContent="Checking…";await watch(prev);return;}
+    say("Checking eligibility for "+short(acct)+"…");
+    var c=await countTx(acct);var n=c.n;
+    if(n>=MIN_TX){
+      say('<b class="ok">Eligible.</b> '+short(acct)+" has "+n+" transactions on Base.<br>Join/claim fee: <b>0.000333 ETH</b> plus network gas. It is shown again in your wallet before you sign.","ok");
+      btn.textContent="Join & claim · 0.000333 ETH";btn.dataset.mode="join";
+    } else {
+      say('<b class="bad">Not eligible.</b> '+short(acct)+" has "+n+" of the "+MIN_TX+" transactions required on Base.<br><span style=\"color:var(--muted)\">Sent: "+c.nonce+" · Sent + received: "+(c.total||"unavailable")+". Make sure you connected the wallet that holds your Base history.</span>","bad");
+      btn.textContent="Switch wallet";btn.dataset.mode="connect";
+    }
+  }
+
+  async function join(){
+    say("Confirm the 0.000333 ETH fee in your wallet…");
+    var hash=await eth().request({method:"eth_sendTransaction",params:[{from:acct,to:RECEIVER,value:FEE}]});
+    save(acct,hash);
+    await watch(hash);
+  }
+
+  btn.onclick=async function(){
+    if(busy)return;busy=true;
+    try{
+      if(btn.dataset.mode==="join")await join();else await connect();
+    }catch(e){
+      var m=(e&&e.code===4001)?"Request rejected in wallet.":((e&&e.message)||"Something went wrong.");
+      say('<span class="bad">'+m+"</span>","bad");
+    }
+    busy=false;
+  };
+})();
+</script>
+</body>
+</html>
